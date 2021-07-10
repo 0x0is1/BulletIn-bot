@@ -1,6 +1,6 @@
 from tweepy import StreamListener
 from tweepy import Stream
-import tweepy,os
+import tweepy, os, json
 
 CONSUMER_KEY=os.environ.get('CK')
 CONSUMER_SECRET=os.environ.get('CS')
@@ -14,9 +14,13 @@ api = tweepy.API(auth)
 class StdOutListener(StreamListener):
 
     def on_data(self, data):
-        # process stream data here
-        print(data)
-
+        psdata=json.loads(data)
+        if psdata['id'] != 96900937:
+          return
+        with open('cache.json', 'w') as f:
+            json.dump(psdata, f)
+        print('data recieved')
+        
     def on_error(self, status):
         print(status)
 
@@ -24,7 +28,7 @@ if __name__ == '__main__':
     api = tweepy.API(auth)
   
     # the screen name of the user
-    screen_name = "0x0is1"
+    screen_name = "ndtvfeed"
   
     # fetching the user
     user = api.get_user(screen_name)
@@ -35,3 +39,4 @@ if __name__ == '__main__':
     listener = StdOutListener()
     twitterStream = Stream(auth, listener)
     twitterStream.filter(follow=[ID])
+  
