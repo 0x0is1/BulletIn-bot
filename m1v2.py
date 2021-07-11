@@ -2,7 +2,7 @@ from discord.ext import commands, tasks
 import tweepy, discord, json, asyncio
 from tweepy import StreamListener, Stream
 from configuration import *
-from libm2v1 import parse_data, fetch_user
+from libm2v1.libm2v1 import parse_data, fetch_user
 
 contents = {}
 follow_handles = ['0x0is1']
