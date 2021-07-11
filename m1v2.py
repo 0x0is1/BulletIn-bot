@@ -2,10 +2,11 @@ from discord.ext import commands, tasks
 import tweepy, discord, json, asyncio
 from tweepy import StreamListener, Stream
 from configuration import *
-from libm2v1.libm2v1 import parse_data, fetch_user
-
+from libm2v1 import parse_data, fetch_user
+from embeds import tweet_embed
+from webserver import wsv
 contents = {}
-follow_handles = ['0x0is1']
+follow_handles = ['ndtvfeed']
 follow_handles_ids = []
 info = {}
 REFRESH_TIME=5
@@ -48,12 +49,16 @@ async def auto_sender():
 	for tid in tids:
 		for cid in info[tid]:
 			channel = bot.get_channel(cid)
-			await channel.send(contents[tid])
+			parsed_data=contents[tid]
+			embed=tweet_embed(parsed_data)
+			await channel.send(embed=embed)
 			contents.pop(tid)
       
 @bot.event
 async def on_ready():
   print('Bot status: online')
+  with open('info.json', 'r') as f:
+    info=json.load(f)
   auto_sender.start()
   listener = StdOutListener()
   twitterStream = Stream(auth, listener)
@@ -63,13 +68,13 @@ async def on_ready():
 async def subscribe(ctx):
 	message = 'Choose handles from following options.\n'
 	for i, j in enumerate(follow_handles):
-		message += str(i) + '. ' + j + '\n'
+		message += str(i+1) + '. ' + j + '\n'
 	message += 'Write all handle numbers with a space in 30 seconds:'
 	await ctx.send(message)
 	try:
 		msg = await bot.wait_for("message", timeout=30)
 		for i in msg.content.split(' '):
-			tid = fetch_user(follow_handles[int(i)], api).id_str
+			tid = fetch_user(follow_handles[int(i)-1], api).id_str
 			channel_id = ctx.message.channel.id
 			info[tid].append(channel_id)
 		with open('info.json', 'w') as f:
@@ -96,6 +101,7 @@ async def unsubscribe(ctx):
 		await ctx.send('**Unsubscribed.**')
 	except asyncio.TimeoutError:
 		await ctx.send("Sorry, you didn't reply in time!")
-  except KeyError:pass
+	except KeyError:pass
 
+wsv()
 bot.run(BOT_TOKEN)
