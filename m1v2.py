@@ -15,15 +15,7 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 bot = commands.Bot(command_prefix='??')
-
-for i in follow_handles:
-  fhid=fetch_user(i, api).id_str
-  follow_handles_ids.append(fhid)
-  if fhid not in list(info.keys()):
-	  info[fhid]=[]
-	  
-
-
+ 
 class StdOutListener(StreamListener):
 	def on_data(self, data):
 		data = json.loads(data)
@@ -56,9 +48,14 @@ async def auto_sender():
       
 @bot.event
 async def on_ready():
+  global info
   print('Bot status: online')
   with open('info.json', 'r') as f:
     info=json.load(f)
+  for i in follow_handles:
+  fhid=fetch_user(i, api).id_str
+  follow_handles_ids.append(fhid)
+  if fhid not in list(info.keys()): info[fhid]=[]
   auto_sender.start()
   listener = StdOutListener()
   twitterStream = Stream(auth, listener)
@@ -66,6 +63,7 @@ async def on_ready():
 
 @bot.command()
 async def subscribe(ctx):
+	global info
 	message = 'Choose handles from following options.\n'
 	for i, j in enumerate(follow_handles):
 		message += str(i+1) + '. ' + j + '\n'
@@ -85,6 +83,7 @@ async def subscribe(ctx):
 
 @bot.command()
 async def unsubscribe(ctx):
+	global info
 	message = 'Choose handles from following options.\n'
 	for i, j in enumerate(follow_handles):
 		message += str(i) + '. ' + j + '\n'
