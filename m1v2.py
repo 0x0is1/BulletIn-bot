@@ -6,7 +6,9 @@ from libm2v1.libm2v1 import parse_data, fetch_user
 from embeds import tweet_embed
 from webserver import wsv
 contents = {}
-follow_handles = ['ndtvfeed','DRDO_India', 'isro', 'ndtv']
+follow_handles = ['ndtvfeed','DRDO_India', 'isro', 'ndtv', 'DeportesCuatro', 'ferrancorreas', 'lesportiuCAT', 'mcgrathmike', 'FlorentTorchut',
+'santiovalle', 'gbsans', 'LivEchoLFC', 'sport', 'moillorens', 'samuelmarsden', 'ffpolo', 'Alfremartinezz', 'martinezferran', 'sergisoleMD', 'Benayadachraf', 'fansjavimiguel',
+'EsportsRAC1']
 follow_handles_ids = []
 info = {}
 REFRESH_TIME=5
@@ -27,7 +29,9 @@ class StdOutListener(StreamListener):
 
 		parsed_data = parse_data(data)
 		contents[curr_id] = list(parsed_data)
-		print(contents)
+		if 'extended_tweet' in str(data):
+		  with open('cache.json', 'w') as f:
+		    json.dump(data, f)
 
 	def on_error(self, status):
 		print(status)
@@ -89,13 +93,13 @@ async def unsubscribe(ctx):
 	global info
 	message = 'Choose handles from following options.\n'
 	for i, j in enumerate(follow_handles):
-		message += str(i) + '. ' + j + '\n'
-	message += 'Write all handle numbers with a space in 30 seconds:'
+		message += str(i+1) + '. ' + j + '\n'
+	message += 'Write all handle numbers with a space in 100 seconds:'
 	await ctx.send(message)
 	try:
-		msg = await bot.wait_for("message", timeout=30)
+		msg = await bot.wait_for("message", timeout=100)
 		for i in msg.content.split(' '):
-			tid = fetch_user(follow_handles[int(i)], api).id_str
+			tid = fetch_user(follow_handles[int(i)-1], api).id_str
 			channel_id = ctx.message.channel.id
 			info[tid].remove(channel_id)
 		with open('info.json', 'w') as f:
