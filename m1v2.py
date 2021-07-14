@@ -2,11 +2,11 @@ from discord.ext import commands, tasks
 import tweepy, discord, json, asyncio
 from tweepy import StreamListener, Stream
 from configuration import *
-from libm2v1 import parse_data, fetch_user
+from libm2v1.libm2v1 import parse_data, fetch_user
 from embeds import tweet_embed
 from webserver import wsv
 contents = {}
-follow_handles = ['ndtvfeed','DRDO_India', 'isro']
+follow_handles = ['ndtvfeed','DRDO_India', 'isro', 'ndtv']
 follow_handles_ids = []
 info = {}
 REFRESH_TIME=5
