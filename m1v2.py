@@ -6,9 +6,7 @@ from libm2v1.libm2v1 import parse_data, fetch_user
 from embeds import tweet_embed
 from webserver import wsv
 contents = {}
-follow_handles = ['ndtvfeed','DRDO_India', 'isro', 'ndtv', 'DeportesCuatro', 'ferrancorreas', 'lesportiuCAT', 'mcgrathmike', 'FlorentTorchut',
-'santiovalle', 'gbsans', 'LivEchoLFC', 'sport', 'moillorens', 'samuelmarsden', 'ffpolo', 'Alfremartinezz', 'martinezferran', 'sergisoleMD', 'Benayadachraf', 'fansjavimiguel',
-'EsportsRAC1']
+
 follow_handles_ids = []
 info = {}
 REFRESH_TIME=5
